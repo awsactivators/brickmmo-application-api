@@ -12,7 +12,7 @@ function toggleMenu() {
 // Dynamic GitHub Repository Fetching
 const repoContainer = document.getElementById("repo-container"); 
 const paginationContainer = document.getElementById("pagination");
-const githubUsername = "awsactivators"; 
+const githubUsername = "brickmmo"; 
 const perPage = 9; 
 let currentPage = 1;
 let allRepos = [];

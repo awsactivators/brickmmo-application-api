@@ -1,30 +1,9 @@
 <?php
-// Load environment variables from .env file
-$envFile = __DIR__ . '/.env';
-
-if (file_exists($envFile)) {
-    $env = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($env as $value) {
-        list($key, $val) = explode('=', $value, 2);
-        // Set environment variable
-        putenv("$key=$val");  
-    }
-}
-
-// Retrieve the GitHub token and owner from .env
-$token = getenv('GITHUB_TOKEN'); 
-$owner = getenv('GITHUB_OWNER'); 
-
-// Ensure token and owner are properly loaded
-if (!$token || !$owner) {
-    die("Error: Environment variables not loaded correctly.");
-}
-
 if (isset($_GET['repo'])) {
     $repoName = $_GET['repo'];
+    $owner = "BrickMMO"; 
 
     $headers = [
-        "Authorization: token $token",
         "User-Agent: BrickMMO-WebApp"
     ];
 
@@ -41,7 +20,6 @@ if (isset($_GET['repo'])) {
     $repoUrl = "https://api.github.com/repos/$owner/$repoName";
     $commitsUrl = "$repoUrl/commits";
     $contributorsUrl = "$repoUrl/contributors";
-    $collaboratorsUrl = "$repoUrl/collaborators";
     $branchesUrl = "$repoUrl/branches";
     $forksUrl = "$repoUrl/forks";
     $mergesUrl = "$repoUrl/pulls?state=closed";
@@ -51,7 +29,6 @@ if (isset($_GET['repo'])) {
     $repoData = fetchGitHubData($repoUrl, $headers);
     $commitsData = fetchGitHubData($commitsUrl, $headers);
     $contributorsData = fetchGitHubData($contributorsUrl, $headers);
-    $collaboratorsData = fetchGitHubData($collaboratorsUrl, $headers);
     $branchesData = fetchGitHubData($branchesUrl, $headers);
     $forksData = fetchGitHubData($forksUrl, $headers);
     $mergesData = fetchGitHubData($mergesUrl, $headers);
@@ -60,7 +37,6 @@ if (isset($_GET['repo'])) {
 
     $latestCommit = isset($commitsData[0]) ? $commitsData[0]['commit']['author'] : null;
     $contributors = array_map(fn($contributor) => "<a href='https://github.com/{$contributor['login']}' target='_blank'>{$contributor['login']}</a>", $contributorsData ?? []);
-    $collaborators = array_map(fn($collaborator) => $collaborator['login'], $collaboratorsData ?? []);
     $branches = array_map(fn($branch) => "<a href='{$repoData['html_url']}/tree/{$branch['name']}' target='_blank'>{$branch['name']}</a>", $branchesData ?? []);
     $forksCount = count($forksData ?? []);
     $mergesCount = count($mergesData ?? []);
@@ -68,8 +44,6 @@ if (isset($_GET['repo'])) {
     $languages = implode(', ', array_keys($languagesData)) ?: 'N/A';
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -84,7 +58,7 @@ if (isset($_GET['repo'])) {
     <header>
         <div class="logo">
             <a href="index.html">
-            <img src="./assets/BrickMMO_Logo_Coloured.png" alt="brickmmo logo" width="80px">
+                <img src="./assets/BrickMMO_Logo_Coloured.png" alt="brickmmo logo" width="80px">
             </a>
         </div>
         <nav>
@@ -98,9 +72,9 @@ if (isset($_GET['repo'])) {
             </div>
             <div class="repo-info">
                 <div id="repo-brief">
-                <h2 id="repo-title"> <?= htmlspecialchars($repoData['name'] ?? 'N/A') ?> </h2>
-                <p id="repo-description"> <?= htmlspecialchars($repoData['description'] ?? 'No description available') ?> </p>
-                <a id="repo-link" href="<?= $repoData['html_url'] ?? '#' ?>" target="_blank" class="github-btn">GitHub Link</a>
+                    <h2 id="repo-title"> <?= htmlspecialchars($repoData['name'] ?? 'N/A') ?> </h2>
+                    <p id="repo-description"> <?= htmlspecialchars($repoData['description'] ?? 'No description available') ?> </p>
+                    <a id="repo-link" href="<?= $repoData['html_url'] ?? '#' ?>" target="_blank" class="github-btn">GitHub Link</a>
                 </div>
                 <div id="repo-details">
                     <h3>Repository Details</h3>
@@ -108,7 +82,6 @@ if (isset($_GET['repo'])) {
                         <li><strong>Forks:</strong> <span id="forks"> <?= $forksCount ?? 'N/A' ?> </span></li>
                         <li><strong>Branches:</strong> <span id="branches"> <?= implode(', ', $branches) ?: 'N/A' ?> </span></li>
                         <li><strong>Contributors:</strong> <span id="contributors"> <?= implode(', ', $contributors) ?: 'N/A' ?> </span></li>
-                        <li><strong>Collaborators:</strong> <?= implode(', ', $collaborators) ?: 'N/A' ?></li>
                         <li><strong>Last Commit:</strong> <span id="commits"> <?= $latestCommit['name'] ?? 'N/A' ?> on <?= $latestCommit['date'] ?? 'N/A' ?> </span></li>
                         <li><strong>Merges:</strong> <span id="merges"> <?= $mergesCount ?? 'N/A' ?> </span></li>
                         <li><strong>Clones:</strong> <span id="clones"> <?= $clonesCount ?> </span></li>

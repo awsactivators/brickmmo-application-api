@@ -9,7 +9,7 @@ A **GitHub Repository Explorer** that dynamically fetches and displays public re
 - **Pagination system** with **Next/Previous** buttons and page count (`1/20`).  
 - Fully **responsive design** for mobile, tablet, and desktop.  
 - Clickable **BrickMMO Logo** redirects to the homepage.  
-- **Secure API calls** using environment variables (`.env`).  
+- **Secure API calls** to public GitHub repositories.  
 
 ---
 
@@ -30,15 +30,8 @@ git clone https://github.com/awsactivators/brickmmo-application-api.git
 cd brickmmo-application-api
 ```
 
-### 2️⃣ Create a `.env` File for Secure API Calls
-Inside the project root, create a `.env` file:
-```env
-GITHUB_TOKEN=your_github_personal_access_token
-GITHUB_OWNER=your_github_username
-```
-> **Note:** Replace `your_github_personal_access_token` with a **GitHub PAT** that has public repository access.
 
-### 3️⃣ Start the Local Development Server
+### 2️⃣ Start the Local Development Server
 Run PHP's built-in server:
 ```bash
 php -S localhost:8000
@@ -53,12 +46,12 @@ Then, open **`http://localhost:8000/`** in your browser.
 - **Loads all public repositories** of the specified GitHub user.
 - **Displays repository details** (name, description, languages used).
 - **Pagination system** lets you browse repositories **9 per page**.
-- Clicking **"Demo"** opens the repo's **GitHub link**.
+- Clicking **"GitHub"** opens the repo's **GitHub link**.
 - Clicking **"View Details"** navigates to the **repo details page**.
 
 ### **📜 Repository Details Page**
 - Fetches **detailed information** about a repository.
-- Displays **latest commit**, **contributors**, **languages**, **forks**, and **branches**.
+- Displays **latest commit**, **Merges**, **contributors**, **languages**, **forks**, and **branches**.
 - **GitHub link button** redirects users to the repo.
 
 ---
@@ -80,10 +73,6 @@ Then, open **`http://localhost:8000/`** in your browser.
 - **Fetch repository contributors**
   ```bash
   GET https://api.github.com/repos/{owner}/{repo}/contributors
-  ```
-- **Fetch repository Collaborators**
-  ```bash
-  GET https://api.github.com/repos/{owner}/{repo}/collaborators
   ```
 - **Fetch repository Forks**
   ```bash
@@ -116,18 +105,10 @@ Then, open **`http://localhost:8000/`** in your browser.
 
 ---
 
-## 🛡 Security Considerations
-
-- **GitHub API rate limits** (60 requests/hour for unauthenticated users).  
-- **Use a GitHub token** in the `.env` file to increase the limit (5000 requests/hour).  
-- **Avoid committing `.env` file** (add it to `.gitignore`).  
-
----
 
 ## 🎯 Next Steps
 
 - Add **search functionality** to find specific repos.
-- Fetch and display **private repositories** (requires OAuth authentication).
 - Implement **star/unstar repo** functionality.
 - Implement contibutors badge
 
